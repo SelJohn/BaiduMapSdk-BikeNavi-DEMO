@@ -1,0 +1,79 @@
+apply plugin: 'com.android.application'
+apply plugin: 'org.jetbrains.kotlin.android'
+
+repositories {
+    flatDir {
+        dir 'libs'
+    }
+}
+
+android {
+    compileSdkVersion 36
+
+    defaultConfig {
+        applicationId "com.baidu.bikenavi_demo"
+        minSdkVersion 21
+        targetSdkVersion 36
+        versionCode 1
+        versionName "1.0"
+    }
+
+    compileOptions {
+        sourceCompatibility 1.8
+        targetCompatibility 1.8
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    signingConfigs {
+        // your release keystore
+        release {
+            storeFile file("release.keystore")
+        }
+    }
+
+    sourceSets {
+        main {
+            jniLibs.srcDir 'libs'
+        }
+    }
+    namespace 'com.baidu.bikenavi_demo'
+    lint {
+        abortOnError false
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+}
+
+dependencies {
+    implementation 'com.baidu.lbsyun:NaviTts:3.2.13'
+    implementation(name: 'BaiduLBS_Android', ext: 'aar')
+
+}
+
+buildscript {
+    ext {
+        kotlin_version = '2.2.0'
+    }
+    repositories {
+        mavenCentral()
+        google()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:8.11.0'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+allprojects {
+    repositories {
+        mavenCentral()
+        google()
+    }
+}

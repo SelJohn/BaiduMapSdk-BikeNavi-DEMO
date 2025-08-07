@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="200dp"
+    android:layout_height="100dp"
+    android:orientation="vertical"
+    android:background="#CC2196F3"
+    android:padding="8dp">
+
+    <ImageView
+        android:id="@+id/close_button"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_gravity="end"
+        android:src="@drawable/ic_close"
+        android:tint="#FFFFFF" />
+    <ImageView
+        android:id="@+id/induction_icon"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
+        android:layout_gravity="start"/>
+
+    <TextView
+        android:id="@+id/title_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        android:layout_marginTop="8dp"/>
+
+</LinearLayout>
