@@ -26,7 +26,7 @@
 1、多实例setMapDpiScale(float mapScale, float logoScale)，接口增加第二个参数，表示设置多实例logo缩放比例。设置成0不显示logo。
 2、骑行导航增加设置全览路线的margin接口。
 需要注意的是，设置导航中全览margin要保证NaviHelper.getNaviMap()已经添加可以计算出来宽高。
-示例：
+示例
 mNaviHelper.getNaviMap().post(new Runnable() {
             @Override
             public void run() {
@@ -38,6 +38,7 @@ mNaviHelper.getNaviMap().post(new Runnable() {
 3、BikeNavigateHelper增加 setNeedSensor（bool），用来调节车标heading，不设置sensor（设置为false） 车头默认会按照路线方向。需要在开始导航之前调用。
 4、增加行中动态设置地图元素接口。
 主实例
+
 BikeNaviDisplayOption.BikeMapCustomDrawOption bikeNaviDisplayOption = new BikeNaviDisplayOption.BikeMapCustomDrawOption();
                 bikeNaviDisplayOption.setCompassCustomBitmap(); // 设置罗盘资源
                 bikeNaviDisplayOption.setEndPointCustomBitmap(); // 设置终点资源
@@ -50,7 +51,8 @@ BikeNaviDisplayOption.BikeMapCustomDrawOption bikeNaviDisplayOption = new BikeNa
                 bikeNaviDisplayOption.setCompassCustomScale(); // 设置罗盘缩放比例
 BikeNavigateHelper.getInstance().updateMapRenderCustomDrawOption(bikeNaviDisplayOption);
 多实例
-                MapCustomDrawOption mapCustomDrawOption = new MapCustomDrawOption();
+
+MapCustomDrawOption mapCustomDrawOption = new MapCustomDrawOption();
                 mapCustomDrawOption.setCompassCustomBitmap(); // 设置罗盘资源
                 mapCustomDrawOption.setEndPointCustomBitmap(); // 设置终点资源
                 mapCustomDrawOption.setCarPointCustomRes(); // 设置车标资源
@@ -62,6 +64,7 @@ BikeNavigateHelper.getInstance().updateMapRenderCustomDrawOption(bikeNaviDisplay
                 mapCustomDrawOption.setCompassCustomScale(); // 设置罗盘缩放比例
                 multiNaviView.updateExtMapRenderCustomDrawOption(mapCustomDrawOption);
 5、增加行中定位回调
+
 IWRouteGuidanceListener
     /**
      * GPS状态发生变化，来自诱导引擎的消息
@@ -70,10 +73,12 @@ IWRouteGuidanceListener
      */
      void onGpsStatusChange(int gpsSignalLevel) {}
 6、设置起终点红线显隐
+
 BikeNavigateHelper增加接口getNaviSettingManager()
 setVibrationOpen // 震动提醒开关
 setRedlineOpen // 起终点红线显隐开关
 setCrossMapLevelOpen // 路口自动放大开关
+
 7、TTS playTTSText 接口中 第二个参数 int bPreempt，用来判断当前的tts播报是否需要抢占焦点。getTTSState 接口废弃。
         WNTTSManager.getInstance().initTTS(new WNTTSManager.IWNOuterTTSPlayerCallback() {
             @Override
