@@ -124,7 +124,7 @@ boolean success = WalkNavigateHelper.getInstance().startBkgNavi(
 );
 ```
 
-#### 注意事项：
+#### 注意事项
 
 1. **权限检查**：启动前必须验证多实例地图权限
 2. **内存管理**：服务销毁时需要释放地图资源
