@@ -13,6 +13,7 @@
     </com.baidu.mapapi.map.MapView>
 
     <Button
+        android:visibility="gone"
         android:id="@+id/btn_bikenavi"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -23,6 +24,7 @@
         android:text="骑行导航" />
 
     <Button
+        android:visibility="gone"
         android:id="@+id/btnMultiBikeNavi"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -31,6 +33,7 @@
         android:text="多实例骑行导航" />
 
     <Button
+        android:visibility="gone"
         android:id="@+id/btnBikeMultipleRoute"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -39,6 +42,7 @@
         android:text="骑行多路线" />
 
     <Button
+        android:visibility="gone"
         android:id="@+id/btn_walknavi_trace"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -48,6 +52,7 @@
         android:text="步行导航（轨迹）" />
 
     <Button
+        android:visibility="gone"
         android:id="@+id/btnBikeMultipleRoute2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -57,6 +62,7 @@
         android:text="骑行多路线2" />
 
     <Button
+        android:visibility="gone"
         android:id="@+id/btn_walknavi_normal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -68,6 +74,7 @@
         android:text="步行导航" />
 
     <Button
+        android:visibility="gone"
         android:id="@+id/btnMultiWalkNavi"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -77,6 +84,7 @@
         android:text="多实例步行导航" />
 
     <Button
+        android:visibility="gone"
         android:id="@+id/btn_walknavi_ar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -86,6 +94,7 @@
         android:text="AR步行导航" />
 
     <Button
+        android:visibility="gone"
         android:id="@+id/btnWalkSearchNavi"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -99,7 +108,7 @@
         android:padding="5dp"
         android:layout_marginRight="10dp"
         android:layout_alignParentRight="true"
-        android:layout_below="@id/btnWalkSearchNavi"
+        android:layout_below="@id/background_draw_map_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
         <TextView
@@ -112,6 +121,7 @@
             android:layout_height="wrap_content"/>
     </LinearLayout>
     <LinearLayout
+        android:visibility="gone"
         android:layout_marginTop="10dp"
         android:background="#ddd"
         android:padding="5dp"
@@ -131,6 +141,7 @@
     </LinearLayout>
 
     <Button
+        android:visibility="gone"
         android:id="@+id/btn_floating_window"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -144,7 +155,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_below="@id/btn_floating_window"
+        android:layout_below="@id/background_draw_map_view"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="10dp"
         android:text="开启后台导航服务" />
@@ -159,7 +170,6 @@
         android:text="结束后台导航服务" />
     <ImageView
         android:id="@+id/background_draw_map_view"
-        android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
