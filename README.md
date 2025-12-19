@@ -82,7 +82,7 @@ mBackgroundDrawMapView.setScreenShotCallback(new IBackgroundMapView.IScreenShotC
 #### 地图显示设置
 
 ```java
-// 设置地图范围（边距）
+// 设置地图范围（全览路线边距配合setNaviMapViewAllStatus使用）
 mBackgroundDrawMapView.setNaviMapMargin(0, 50, 0, 50);
 
 // 设置全览模式
