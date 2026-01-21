@@ -10,15 +10,20 @@ import android.os.Message;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.baidu.mapapi.bikenavi.BikeNavigateHelper;
+import com.baidu.mapapi.bikenavi.adapter.IBEngineInitListener;
+import com.baidu.mapapi.bikenavi.adapter.IBRoutePlanListener;
+import com.baidu.mapapi.bikenavi.model.BikeRoutePlanError;
+import com.baidu.mapapi.bikenavi.params.BikeNaviLaunchParam;
+import com.baidu.mapapi.bikenavi.params.BikeRouteNodeInfo;
 import com.baidu.mapapi.common.auth.BWAuthFuncResult;
 import com.baidu.mapapi.common.auth.BWAuthLicenseType;
 import com.baidu.mapapi.common.auth.BWAuthResult;
 import com.baidu.mapapi.common.auth.IBWAuthListener;
-import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.offscreen.BkgCustomDrawOptions;
-import com.baidu.mapapi.offscreen.IBackgroundDrawLayer;
-import com.baidu.mapapi.offscreen.IBackgroundMapView;
 import com.baidu.mapapi.offscreen.OffScreenMapNaviHelper;
+import com.baidu.mapapi.offscreen.IBackgroundMapView;
+import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.walknavi.WalkNavigateHelper;
 import com.baidu.mapapi.walknavi.adapter.IWEngineInitListener;
 import com.baidu.mapapi.walknavi.adapter.IWRoutePlanListener;
@@ -27,6 +32,7 @@ import com.baidu.mapapi.walknavi.params.WalkNaviLaunchParam;
 import com.baidu.mapapi.walknavi.params.WalkRouteNodeInfo;
 import com.baidu.platform.comapi.license.AuthorizeServiceType;
 import com.baidu.platform.comapi.license.LicenseCode;
+import com.baidu.mapapi.offscreen.IBackgroundDrawLayer;
 
 
 /**
@@ -37,15 +43,89 @@ import com.baidu.platform.comapi.license.LicenseCode;
 public class BackgroundNaviService extends Service {
     private static final String TAG = "BackgroundNaviService";
     private static IBackgroundMapView.IScreenShotCallback mScreenShotCallback;
+    private static final boolean BIKE_NAVI = false;
     private final Handler handler = new Handler(Looper.getMainLooper()) {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             if (msg.what == 0) {
-                initWalkEngine();
+                if (BIKE_NAVI) {
+                    initBikeEngine();
+                } else {
+                    initWalkEngine();
+                }
+
             }
         }
     };
+
+    private void initBikeEngine() {
+        // 有权限了再去创建多实例地图 投屏地图
+        BikeNavigateHelper.getInstance().initNaviEngine(this.getApplicationContext(), new IBEngineInitListener() {
+            @Override
+            public void engineInitSuccess() {
+                Log.d(TAG, "BikeNavi engineInitSuccess");
+                // 设置导航常驻
+                BikeNavigateHelper.getInstance().setIfNaviStanding(true);
+                // 创建后台绘制多实例地图
+                routePlan4BikeNavi();
+            }
+
+            @Override
+            public void engineInitFail() {
+                Log.d(TAG, "BikeNavi engineInitFail");
+                BikeNavigateHelper.getInstance().unInitNaviEngine();
+            }
+        });
+    }
+
+    private void routePlan4BikeNavi() {
+        LatLng startPt = new LatLng(40.056508, 116.307252);
+        LatLng endPt = new LatLng(40.049742, 116.280516);
+
+        BikeRouteNodeInfo walkStartNode = new BikeRouteNodeInfo();
+        walkStartNode.setLocation(startPt);
+        BikeRouteNodeInfo walkEndNode = new BikeRouteNodeInfo();
+        walkEndNode.setLocation(endPt);
+        BikeNaviLaunchParam walkParam = new BikeNaviLaunchParam().startNodeInfo(walkStartNode).endNodeInfo(walkEndNode);
+
+        BikeNavigateHelper.getInstance().routePlanWithRouteNode(walkParam, new IBRoutePlanListener() {
+            @Override
+            public void onRoutePlanStart() {
+                Log.d(TAG, "BikeNavi onRoutePlanStart");
+            }
+            @Override
+            public void onRoutePlanSuccess() {
+                Log.d(TAG, "onRoutePlanSuccess");
+//                OffScreenMapNaviHelper.getInstance().setLocationDirectionFollowPhone(true);
+                startBikeNavi();
+            }
+
+            @Override
+            public void onRoutePlanFail(BikeRoutePlanError error) {
+                Log.d(TAG, "BikeNavi onRoutePlanFail");
+            }
+
+        });
+    }
+
+    private void startBikeNavi() {
+        // 步行后台导航，模拟导航
+        boolean b ;
+        if (!BNaviMainActivity.isFakeNavi) {
+            b = BikeNavigateHelper.getInstance().startBkgNavi(null, this, BikeNavigateHelper.NaviMode.RealNavi);
+        } else {
+            b = BikeNavigateHelper.getInstance().startBkgNavi(null, this, BikeNavigateHelper.NaviMode.FakeNavi);
+            BikeNavigateHelper.getInstance().setSimulateNaviSpeed(3);
+        }
+
+        if (!b) {
+            Toast.makeText(this, "骑行导航启动失败", Toast.LENGTH_SHORT).show();
+        } else {
+            createBackgroundDrawMapView();
+        }
+    }
+
     private IBackgroundMapView mBackgroundDrawMapView;
 
     @Override
@@ -143,6 +223,7 @@ public class BackgroundNaviService extends Service {
             @Override
             public void onRoutePlanSuccess() {
                 Log.d(TAG, "onRoutePlanSuccess");
+//                OffScreenMapNaviHelper.getInstance().setLocationDirectionFollowPhone(true);
                 startNavi();
             }
 
@@ -155,14 +236,15 @@ public class BackgroundNaviService extends Service {
     }
 
     private void startNavi() {
-        // 步行后台导航
-        boolean b;
-        if (BNaviMainActivity.isFakeNavi) {
-            b = WalkNavigateHelper.getInstance().startBkgNavi(null, this, WalkNavigateHelper.NaviMode.FakeNavi);
-            WalkNavigateHelper.getInstance().setSimulateNaviSpeed(3); // m/s
-        } else {
+        // 步行后台导航，模拟导航
+        boolean b ;
+        if (!BNaviMainActivity.isFakeNavi) {
             b = WalkNavigateHelper.getInstance().startBkgNavi(null, this, WalkNavigateHelper.NaviMode.RealNavi);
+        } else {
+            b = WalkNavigateHelper.getInstance().startBkgNavi(null, this, WalkNavigateHelper.NaviMode.FakeNavi);
+            WalkNavigateHelper.getInstance().setSimulateNaviSpeed(3);
         }
+
         if (!b) {
             Toast.makeText(this, "步行导航启动失败", Toast.LENGTH_SHORT).show();
         } else {
@@ -174,12 +256,17 @@ public class BackgroundNaviService extends Service {
     public void onDestroy() {
         super.onDestroy();
         if (null != mBackgroundDrawMapView) {
+            mBackgroundDrawMapView.setScreenShotCallback(null);
             mBackgroundDrawMapView.onDestroy();
             mBackgroundDrawMapView = null;
         }
         WalkNavigateHelper.getInstance().getAuthManager().removeAuthListener(authListener);
         OffScreenMapNaviHelper.getInstance().destroyBkgNavi(null);
-        WalkNavigateHelper.getInstance().quit();
+        if (BIKE_NAVI) {
+            BikeNavigateHelper.getInstance().quit();
+        } else {
+            WalkNavigateHelper.getInstance().quit();
+        }
     }
 
     @Override

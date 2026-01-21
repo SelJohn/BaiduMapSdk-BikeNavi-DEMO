@@ -27,9 +27,11 @@ public class BNaviDemoApplication extends Application {
     public void onCreate() {
         super.onCreate();
         try {
+            // 设置设备信息,后台导航与多实例地图鉴权使用（基础功能不需要设置）
             CommonInfo commonInfo = new CommonInfo.Builder()
                     .shareDeviceId("123456789")
                     .build();
+            SDKInitializer.setApiKey("*************************");
             SDKInitializer.setCommonInfo(commonInfo);
             SDKInitializer.setAgreePrivacy(this, true);
             SDKInitializer.initialize(this);
