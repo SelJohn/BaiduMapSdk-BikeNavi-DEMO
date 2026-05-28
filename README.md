@@ -55,6 +55,7 @@ WNTTSManager.getInstance().initTTS(config);
 ## 后台导航投屏
 
 允许应用在无界面或后台状态下进行步行/骑行导航，并将地图画面以截图方式回调给调用方。基于百度地图 SDK 的多实例地图技术实现，参考 `BackgroundNaviService`。
+https://github.com/user-attachments/assets/8c008afa-cb36-4b4e-bbf3-bd8fdec60547
 
 ### 初始化流程
 
