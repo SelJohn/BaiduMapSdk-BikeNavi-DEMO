@@ -6,7 +6,6 @@ import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Intent;
 import android.graphics.PixelFormat;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.IBinder;
 import android.view.Gravity;
@@ -23,9 +22,6 @@ import com.baidu.bikenavi_demo.R;
 import com.baidu.bikenavi_demo.floating.data.RGDataOBS;
 import com.baidu.mapapi.bikenavi.BikeNavigateHelper;
 import com.baidu.mapapi.walknavi.WalkNavigateHelper;
-
-import java.util.Observable;
-import java.util.Observer;
 
 public class FloatingWindowService extends Service implements RGDataOBS<ComNaviBean> {
     private WindowManager mWindowManager;
@@ -130,7 +126,9 @@ public class FloatingWindowService extends Service implements RGDataOBS<ComNaviB
         super.onDestroy();
         ComObservable.getInstance().update(true);
         ComObservable.getInstance().removeObserver(this);
-        if (mFloatingView != null) mWindowManager.removeView(mFloatingView);
+        if (mFloatingView != null) {
+            mWindowManager.removeView(mFloatingView);
+        }
     }
 
     private void startForegroundService() {

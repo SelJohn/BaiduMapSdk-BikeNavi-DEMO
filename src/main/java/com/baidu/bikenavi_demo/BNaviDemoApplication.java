@@ -31,7 +31,7 @@ public class BNaviDemoApplication extends Application {
             CommonInfo commonInfo = new CommonInfo.Builder()
                     .shareDeviceId("123456789")
                     .build();
-            SDKInitializer.setApiKey("*************************");
+            SDKInitializer.setApiKey("P5CuGlyMo8SZ2TI8ZIYe1GxGqoi7sSu5");
             SDKInitializer.setCommonInfo(commonInfo);
             SDKInitializer.setAgreePrivacy(this, true);
             SDKInitializer.initialize(this);

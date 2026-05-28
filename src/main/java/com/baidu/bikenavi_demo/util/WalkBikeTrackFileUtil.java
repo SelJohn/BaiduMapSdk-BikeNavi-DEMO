@@ -7,6 +7,7 @@ import android.os.Environment;
 import android.text.TextUtils;
 import android.widget.Toast;
 
+import com.baidu.mapapi.bikenavi.BikeNavigateHelper;
 import com.baidu.mapapi.walknavi.WalkNavigateHelper;
 import com.baidu.platform.comapi.wnplatform.model.datastruct.WCoordType;
 import com.baidu.platform.comapi.wnplatform.model.datastruct.WLocData;
@@ -17,6 +18,8 @@ import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -36,7 +39,7 @@ public class WalkBikeTrackFileUtil {
     private int trackIndex;
     private ITrace listener;
     private static WalkBikeTrackFileUtil instance;
-
+    private boolean isBike = false;
     public static synchronized WalkBikeTrackFileUtil getInstance() {
         if (instance == null) {
             instance = new WalkBikeTrackFileUtil();
@@ -58,7 +61,7 @@ public class WalkBikeTrackFileUtil {
         File[] trackFiles = trackPath.listFiles(new FileFilter() {
             @Override
             public boolean accept(File file) {
-                return file.getName().endsWith(".txt");
+                return file.getName().endsWith(".txt") || file.getName().endsWith(".json");
             }
         });
         if (trackFiles == null || 0 == trackFiles.length) {
@@ -99,12 +102,82 @@ public class WalkBikeTrackFileUtil {
             e.printStackTrace();
         }
         String trackData = stringBuilder.toString();
-        // 根据---分隔路线和轨迹
-        String[] trackSplitList = trackData.split("---");
-        planData = trackSplitList[0];
-        // 再根据===分隔每一条轨迹
-        trackList = trackSplitList[1].split("===");
-        trackIndex = 0;
+        if (pathName.endsWith(".txt")) {
+            // 根据---分隔路线和轨迹
+            String[] trackSplitList = trackData.split("---");
+            planData = trackSplitList[0];
+            // 再根据===分隔每一条轨迹
+            trackList = trackSplitList[1].split("===");
+            trackIndex = 0;
+        } else if (pathName.endsWith(".json")) {
+            isBike = true;
+            // 解析Json格式轨迹：将data数组转换为逗号分隔的字符串列表，索引顺序：Lng,Lat,Speed,Angle,Accuracy,...,Altitude,...
+            try {
+                JSONObject jsonObject = new JSONObject(trackData);
+                JSONArray dataArray = jsonObject.optJSONArray("data");
+                if (dataArray != null) {
+                    String[] parsedTracks = new String[dataArray.length()];
+                    for (int i = 0; i < dataArray.length(); i++) {
+                        JSONObject pointObj = dataArray.getJSONObject(i);
+                        // 按照txt格式字段顺序拼接：Lat,Lng,Speed,Direction(mapped from Angle),Accuracy,SatellitesNum,
+                        // Type,BuildingId,FloorId,NetworkLocType,IndoorState,CoordType(empty for now),
+                        // X,Y,Altitude
+                        String senserAngle = pointObj.optString("SenserAngle", "");
+                        String angleStr = !TextUtils.isEmpty(senserAngle) ? senserAngle :
+                                (!TextUtils.isEmpty(pointObj.optString("Angle")) ? pointObj.optString("Angle") : "0");
+                        
+                        double latitude = parseDouble(pointObj.optString("Lat"));
+                        double longitude = parseDouble(pointObj.optString("Lng"));
+                        float speed = TextUtils.isEmpty(pointObj.optString("Speed")) ? 0f : Float.parseFloat(pointObj.optString("Speed"));
+                        float direction = TextUtils.isEmpty(angleStr) ? 0f : Float.parseFloat(angleStr);
+                        String accuracyStr = pointObj.optString("Accuracy");
+                        float accuracy = TextUtils.isEmpty(accuracyStr) ? 0f : Float.parseFloat(accuracyStr);
+                        int satellitesNum = 0; // Json无此字段，默认0
+
+                        int type = Integer.parseInt(TextUtils.isEmpty(pointObj.optString("LocationKind")) ? "0" : pointObj.optString("LocationKind"));
+                        String buildingId = "-"; // Json无buildingId，使用默认值
+                        String floorId = "-";   // Json无floorId，使用默认值
+                        String networkLocType = ""; // 默认空
+                        int indoorState = -1;     // 表示未知室内外状态
+                        double altitude = TextUtils.isEmpty(pointObj.optString("Altitude", "0").trim()) || "null".equalsIgnoreCase(pointObj.optString("Altitude")) 
+                                ? 0.0 : Double.parseDouble(pointObj.optString("Altitude"));
+
+                        StringBuilder sb = new StringBuilder();
+                        sb.append(String.valueOf(latitude)).append(",")
+                          .append(String.valueOf(longitude)).append(",")
+                          .append(String.valueOf(speed)).append(",")
+                          .append(String.valueOf(direction)).append(",")
+                          .append(String.valueOf(accuracy)).append(",")
+                          .append("0").append(",")
+                          .append("0").append(",") // reserved empty field
+                          .append("0").append(",")
+                          .append("0").append(",")
+                          .append("0").append(",")
+                          .append("0").append(",")
+                          .append("0").append(",")
+                          .append("0").append(",")
+                          .append("0").append(",")
+                          .append(altitude).append(",")
+                          .append("0").append(",")
+                          .append("0").append(",")
+                          .append("0").append(",")
+                          .append("0").append(",");
+                        parsedTracks[i] = sb.toString();
+                    }
+                    trackList = parsedTracks;
+                }
+                JSONObject ori = jsonObject.getJSONObject("startendInfo");
+                String s1 = ori.getJSONObject("startPoint").optString("lat");
+                String s2 = ori.getJSONObject("startPoint").optString("lng");
+                String e1 = ori.getJSONObject("endPoint").optString("lat");
+                String e2 = ori.getJSONObject("endPoint").optString("lng");
+                planData = s1 + "," + s2 + "," + e1 + "," + e2;
+                trackIndex = 0;
+            } catch (Exception e) {
+                throw new RuntimeException("parse json failed", e);
+            }
+        }
+
         listener.readTraceFileFinish();
     }
 
@@ -150,11 +223,34 @@ public class WalkBikeTrackFileUtil {
             locData.networkLocType = itemList[10];
             locData.satellitesNum = !TextUtils.isEmpty(itemList[5]) ? Integer.parseInt(itemList[5]) : 0;
         }
-        WalkNavigateHelper.getInstance().triggerLocation(locData);
+        if (isBike) {
+            BikeNavigateHelper.getInstance().triggerLocation(locData);
+        } else {
+            WalkNavigateHelper.getInstance().triggerLocation(locData);
+        }
         trackIndex++;
     }
 
     public String getPlanData() {
         return planData;
+    }
+
+    private static double parseDouble(String value) {
+        if (TextUtils.isEmpty(value)) return 0;
+        try {
+            String trimmed = value.trim();
+            if ("null".equalsIgnoreCase(trimmed)) return 0;
+            // Handle string values like "12117103" or "34.214058"
+            if (TextUtils.isDigitsOnly(trimmed)) {
+                return Long.parseLong(trimmed);
+            }
+            return Double.parseDouble(trimmed);
+        } catch (NumberFormatException e) {
+            return 0;
+        }
+    }
+
+    public boolean isBike() {
+        return isBike;
     }
 }

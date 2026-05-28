@@ -21,7 +21,7 @@ public class BDLocationManager {
     private BDLocationListener listener;
 
     private static class Holder {
-        private static BDLocationManager INSTANCE = new BDLocationManager();
+        private static BDLocationManager instance = new BDLocationManager();
     }
 
     private BDLocationManager() {
@@ -30,7 +30,7 @@ public class BDLocationManager {
     }
 
     public static BDLocationManager getInstance() {
-        return Holder.INSTANCE;
+        return Holder.instance;
     }
 
     public void addListener(BDLocationListener listener) {

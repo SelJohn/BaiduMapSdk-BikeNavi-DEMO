@@ -12,159 +12,202 @@
 
     </com.baidu.mapapi.map.MapView>
 
-    <Button
-        android:id="@+id/btn_bikenavi"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="10dp"
-        android:text="骑行导航" />
 
-    <Button
-        android:id="@+id/btnMultiBikeNavi"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/btn_bikenavi"
-        android:layout_marginLeft="10dp"
-        android:text="多实例骑行导航" />
-
-    <Button
-        android:id="@+id/btnBikeMultipleRoute"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/btnMultiBikeNavi"
-        android:layout_marginLeft="10dp"
-        android:text="骑行多路线" />
-
-    <Button
-        android:id="@+id/btn_walknavi_trace"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/btnBikeMultipleRoute"
-        android:layout_alignParentLeft="true"
-        android:layout_marginLeft="10dp"
-        android:text="步行导航（轨迹）" />
-
-    <Button
-        android:id="@+id/btnBikeMultipleRoute2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/btn_walknavi_trace"
-        android:layout_alignParentLeft="true"
-        android:layout_marginLeft="10dp"
-        android:text="骑行多路线2" />
-
-    <Button
-        android:id="@+id/btn_walknavi_normal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/btn_bikenavi"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginTop="10dp"
-        android:layout_marginRight="10dp"
-        android:text="步行导航" />
-
-    <Button
-        android:id="@+id/btnMultiWalkNavi"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/btn_walknavi_normal"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="10dp"
-        android:text="多实例步行导航" />
-
-    <Button
-        android:id="@+id/btn_walknavi_ar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/btnMultiWalkNavi"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="10dp"
-        android:text="AR步行导航" />
-
-    <Button
-        android:id="@+id/btnWalkSearchNavi"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/btn_walknavi_ar"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="10dp"
-        android:text="步行多路线" />
     <LinearLayout
-        android:id="@+id/ll_simulation"
-        android:background="#ddd"
-        android:padding="5dp"
-        android:layout_marginRight="10dp"
-        android:layout_alignParentRight="true"
-        android:layout_below="@id/btnWalkSearchNavi"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-        <TextView
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/btn_bikenavi"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="开启模拟导航"/>
-        <CheckBox
-            android:id="@+id/cb_simulation"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-    </LinearLayout>
-    <LinearLayout
-        android:layout_marginTop="10dp"
-        android:background="#ddd"
-        android:padding="5dp"
-        android:layout_marginRight="10dp"
-        android:layout_alignParentRight="true"
-        android:layout_below="@id/ll_simulation"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-        <TextView
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:text="骑行导航" />
+
+        <Button
+            android:id="@+id/btnMultiBikeNavi"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="骑行导航常驻"/>
-        <CheckBox
-            android:id="@+id/cb_navi_standing"
+            android:layout_marginLeft="10dp"
+            android:text="多实例骑行导航" />
+
+        <Button
+            android:id="@+id/btnBikeMultipleRoute"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:text="骑行多路线" />
+
+        <Button
+            android:id="@+id/btn_walknavi_trace"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:text="模拟导航（轨迹）" />
+
+        <Button
+            android:id="@+id/btnBikeMultipleRoute2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:text="骑行多路线2"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/language"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:text="设置繁体中文" />
+
+        <Button
+            android:id="@+id/bike_or_ebike"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:text="自行车/电动车切换" />
+
+        <Button
+            android:id="@+id/btn_floating_window"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:text="悬浮窗功能" />
+
+        <Button
+            android:id="@+id/backNaviStart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:text="开启后台导航服务" />
+
+        <Button
+            android:id="@+id/backNaviEnd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:text="结束后台导航服务" />
+        <Button
+            android:id="@+id/btn_projection_style_custom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@id/backNaviEnd"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:text="投屏样式自定义" />
     </LinearLayout>
 
-    <Button
-        android:id="@+id/btn_floating_window"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@id/btnBikeMultipleRoute2"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="10dp"
-        android:text="悬浮窗功能" />
-    <Button
-        android:id="@+id/backNaviStart"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@id/btn_floating_window"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="10dp"
-        android:text="开启后台导航服务" />
-    <Button
-        android:id="@+id/backNaviEnd"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@id/backNaviStart"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="10dp"
-        android:text="结束后台导航服务" />
-    <ImageView
-        android:id="@+id/background_draw_map_view"
-        android:layout_alignParentBottom="true"
+        android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/btn_walknavi_normal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="10dp"
+            android:text="步行导航" />
+
+        <Button
+            android:id="@+id/btnMultiWalkNavi"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:text="多实例步行导航" />
+
+        <Button
+            android:id="@+id/btn_walknavi_ar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:text="AR步行导航" />
+
+        <Button
+            android:id="@+id/btnWalkSearchNavi"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:text="步行多路线" />
+
+        <LinearLayout
+            android:id="@+id/ll_simulation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:background="#ddd"
+            android:padding="5dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="开启模拟导航" />
+
+            <CheckBox
+                android:id="@+id/cb_simulation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="10dp"
+            android:background="#ddd"
+            android:padding="5dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="骑行导航常驻" />
+
+            <CheckBox
+                android:id="@+id/cb_navi_standing"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+        <Button
+            android:id="@+id/getCUID"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:text="获取CUID" />
+    </LinearLayout>
+
+
     <FrameLayout
+        android:id="@+id/fragment_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/fragment_container"/>
+        android:layout_height="match_parent" />
+
+    <ImageView
+        android:id="@+id/background_draw_map_view1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/background_draw_map_view2"
+        android:layout_alignParentRight="true" />
+
+    <ImageView
+        android:id="@+id/background_draw_map_view2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/background_draw_map_view3"
+        android:layout_alignParentRight="true" />
+
+    <ImageView
+        android:id="@+id/background_draw_map_view3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true" />
 </RelativeLayout>

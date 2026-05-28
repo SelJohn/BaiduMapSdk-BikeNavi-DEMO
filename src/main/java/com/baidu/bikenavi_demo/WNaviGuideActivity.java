@@ -3,17 +3,24 @@
  */
 package com.baidu.bikenavi_demo;
 
+import com.baidu.mapapi.common.model.traffic.TrafficLightOutData;
 import com.baidu.mapapi.walknavi.WalkNavigateHelper;
 import com.baidu.mapapi.walknavi.adapter.IWNaviStatusListener;
+import com.baidu.mapapi.walknavi.adapter.IWRouteGuidanceListener;
 import com.baidu.mapapi.walknavi.adapter.IWTTSPlayer;
+import com.baidu.mapapi.walknavi.model.IWRouteIconInfo;
+import com.baidu.mapapi.walknavi.model.RouteGuideKind;
 import com.baidu.mapapi.walknavi.model.WalkNaviDisplayOption;
+import com.baidu.mapapi.walknavi.model.WalkSimpleMapInfo;
 import com.baidu.platform.comapi.walknavi.WalkNaviModeSwitchListener;
 import com.baidu.platform.comapi.walknavi.widget.ArCameraView;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -140,6 +147,120 @@ public class WNaviGuideActivity extends Activity {
         } else {
             mNaviHelper.startWalkNavi(this);
         }
+
+        boolean startResult = mNaviHelper.startWalkNavi(WNaviGuideActivity.this);
+        Log.e(TAG, "startWalkNavi result : " + startResult);
+
+        mNaviHelper.setRouteGuidanceListener(this, new IWRouteGuidanceListener() {
+            @Override
+            public void onRouteGuideIconInfoUpdate(IWRouteIconInfo routeIconInfo) {
+                if (routeIconInfo != null) {
+                    Log.d(TAG, "onRoadGuideTextUpdate   Drawable=: " + routeIconInfo.getIconDrawable()
+                            + " Name=: " + routeIconInfo.getIconName());
+                }
+            }
+
+            @Override
+            public void onRouteGuideIconUpdate(Drawable icon) {
+                Log.d(TAG, "onRoadGuideTextUpdate   Drawable=: " + icon);
+            }
+
+            @Override
+            public void onRouteGuideKind(RouteGuideKind routeGuideKind) {
+                Log.d(TAG, "onRouteGuideKind: " + routeGuideKind);
+            }
+
+            @Override
+            public void onRoadGuideTextUpdate(CharSequence charSequence, CharSequence charSequence1) {
+                Log.d(TAG, "onRoadGuideTextUpdate   charSequence=: " + charSequence + "   charSequence1 = : " +
+                        charSequence1);
+            }
+
+            @Override
+            public void onRemainDistanceUpdate(CharSequence charSequence) {
+                Log.d(TAG, "onRemainDistanceUpdate: charSequence = :" + charSequence);
+
+            }
+
+            @Override
+            public void onRemainDistanceUpdate(int remainDistance) {
+
+            }
+
+            @Override
+            public void onRemainTimeUpdate(CharSequence charSequence) {
+                Log.d(TAG, "onRemainTimeUpdate: charSequence = :" + charSequence);
+
+            }
+
+            @Override
+            public void onGpsStatusChange(int gpsSignalLevel) {
+                Log.d(TAG, "onRemainTimeUpdate: gpsSignalLevel = :" + gpsSignalLevel);
+            }
+
+            @Override
+            public void onRemainTimeUpdate(int remainTime) {
+
+            }
+
+            @Override
+            public void onGpsStatusChange(CharSequence charSequence, Drawable drawable) {
+                Log.d(TAG, "onGpsStatusChange: charSequence = :" + charSequence);
+
+            }
+
+            @Override
+            public void onRouteFarAway(CharSequence charSequence, Drawable drawable) {
+                Log.d(TAG, "onRouteFarAway: charSequence = :" + charSequence);
+
+            }
+
+            @Override
+            public void onRoutePlanYawing(CharSequence charSequence, Drawable drawable) {
+                Log.d(TAG, "onRoutePlanYawing: charSequence = :" + charSequence);
+
+            }
+
+            @Override
+            public void onReRouteComplete() {
+
+            }
+
+            @Override
+            public void onArriveDest() {
+
+            }
+
+            @Override
+            public void onIndoorEnd(Message msg) {
+
+            }
+
+            @Override
+            public void onFinalEnd(Message msg) {
+
+            }
+
+            @Override
+            public void onVibrate() {
+
+            }
+
+            @Override
+            public void onNaviLocationUpdate() {
+
+            }
+
+            @Override
+            public void onSimpleMapInfoUpdate(WalkSimpleMapInfo info) {
+
+            }
+
+            @Override
+            public void onTrafficLightOutDataUpdate(TrafficLightOutData trafficLightOutData) {
+
+            }
+        });
     }
 
     @Override

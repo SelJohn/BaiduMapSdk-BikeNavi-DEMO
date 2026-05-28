@@ -1,142 +1,136 @@
 # BaiduMapSdk-BikeNavi-DEMO
 
-&zwnj;**基于百度地图步骑行SDK实现步骑行导航的DEMO**&zwnj;
+基于百度地图步骑行 SDK 实现步骑行导航的 Android 演示项目。
 
-## 📚 目录 
+---
+
+## 目录
 
 - [快速开始](#快速开始)
-- [功能特性](#功能特性)
+- [TTS 语音播报](#tts-语音播报)
+- [后台导航投屏](#后台导航投屏)
+- [注意事项](#注意事项)
 
----  
-## 快速开始  
-申请AK
-[百度地图开放平台申请Android AK](https://lbsyun.baidu.com/apiconsole/key#/home)
+---
 
-> 使用AK
-> <img width="882" height="396" alt="image" src="https://github.com/user-attachments/assets/032d207f-c426-46e4-b43c-20b89196ca1d" />
+## 快速开始
 
-> 到这可以正常显示地图 可以开始导航了
+### 1. 申请 API Key
 
-## 功能特性  
-配置TTS，实现导航播报
-[百度地图开放平台申请``TTS](https://lbsyun.baidu.com/apiconsole/key/tts)
+前往 [百度地图开放平台](https://lbsyun.baidu.com/apiconsole/key#/home) 申请 Android 平台的 AK。
 
-获取的 AK SN 填入DEMO
-<img width="800" height="304" alt="image" src="https://github.com/user-attachments/assets/fbad79dd-b63f-4fae-85ed-83c07406a213" />
+### 2. 填入 AK
 
-
-###  步行后台导航投屏功能文档
-
-后台导航投屏功能允许应用在无界面或后台状态下进行步行导航，并将地图画面以截图方式呈现给用户。该功能基于百度地图SDK的多实例地图技术实现。
-
-#### 参考BackgroundNaviService (后台导航服务)
-
-https://github.com/user-attachments/assets/8c008afa-cb36-4b4e-bbf3-bd8fdec60547
-
-实现流程
-
-1. 初始化阶段
+在 `BNaviDemoApplication.java` 中替换 API Key：
 
 ```java
-// 步骤1：授权验证
-authWalk()
-
-// 步骤2：引擎初始化  
-initWalkEngine()
-
-// 步骤3：路由规划
-routePlan()
-
-// 步骤4：开始后台导航
-startNavi()
+SDKInitializer.setApiKey("your_api_key_here");
 ```
 
-2. 地图创建与配置
+完成后即可正常显示地图并开始导航。
+
+---
+
+## TTS 语音播报
+
+### 申请 TTS 凭证
+
+前往 [百度地图开放平台 TTS 控制台](https://lbsyun.baidu.com/apiconsole/key/tts) 申请，获得 `appKey` 和 `authSN`。
+
+### 填入凭证
+
+在 `BNaviDemoApplication.java` 中填入：
 
 ```java
-// 创建后台绘制地图（800x500像素）
-mBackgroundDrawMapView = OffScreenMapNaviHelper.getInstance()
-    .createBackgroundDrawMapView(null, 800, 500);
+WNTTsInitConfig config = new WNTTsInitConfig.Builder()
+        .context(getApplicationContext())
+        .appKey("your_tts_app_key")
+        .authSn("your_tts_auth_sn")
+        .build();
+WNTTSManager.getInstance().initTTS(config);
+```
+
+---
+
+## 后台导航投屏
+
+允许应用在无界面或后台状态下进行步行/骑行导航，并将地图画面以截图方式回调给调用方。基于百度地图 SDK 的多实例地图技术实现，参考 `BackgroundNaviService`。
+
+### 初始化流程
+
+```java
+// 1. 授权验证（多实例 license）
+authAll();
+
+// 2. 初始化引擎
+initWalkEngine(); // 或 initBikeEngine()
+
+// 3. 路线规划
+routePlan();
+
+// 4. 启动后台导航
+startBkgNavi();
+```
+
+### 创建离屏地图
+
+```java
+// 创建后台绘制地图（宽 800px，高 500px）
+IBackgroundMapView bkgMapView = OffScreenMapNaviHelper.getInstance()
+        .createBackgroundDrawMapView(tag, 800, 500);
 
 // 添加导航图层
-IBackgroundDrawLayer naviLayer = OffScreenMapNaviHelper.getInstance().getNaviLayer();
-mBackgroundDrawMapView.addLayer(naviLayer);
-
-// 配置绘制选项
-BkgCustomDrawOptions.Builder builder = new BkgCustomDrawOptions.Builder();
-builder.backgroundColor(0x00000000); // 透明背景
-mBackgroundDrawMapView.setCustomDrawOption(builder.build());
+IBackgroundDrawLayer naviLayer = OffScreenMapNaviHelper.getInstance().getNaviLayer(tag);
+bkgMapView.addLayer(naviLayer);
 ```
 
-3. 截图回调设置
+### 接收截图回调
 
 ```java
-mBackgroundDrawMapView.setScreenShotCallback(new IBackgroundMapView.IScreenShotCallback() {
+bkgMapView.setScreenShotCallback(new IBackgroundMapView.IScreenShotCallback() {
     @Override
     public void onScreenShot(BitmapDrawable bitmap) {
-        // 处理截图数据，可以用于显示在ImageView或上传到服务器
-        Log.i(TAG, "截图数据大小: " + bitmap.getBitmap().getByteCount());
+        // 将 bitmap 显示到 ImageView 或上传服务器
     }
 });
 ```
 
-#### 地图显示设置
+### 地图显示配置
 
-```java
-// 设置地图范围（全览路线边距配合setNaviMapViewAllStatus使用）
-mBackgroundDrawMapView.setNaviMapMargin(0, 50, 0, 50);
+| 方法 | 说明 |
+|---|---|
+| `setNaviMapViewAllStatus(true)` | 全览路线模式 |
+| `setNaviMapMargin(l, t, r, b)` | 设置全览边距（配合全览模式使用） |
+| `setDefaultLevel(19)` | 默认缩放级别（4–22） |
+| `setMapDpiScale(1)` | DPI 缩放系数 |
+| `setFps(5)` | 渲染帧率 |
+| `setNorthMode(true)` | `true` 正北朝上，`false` 路线朝上 |
+| `setCarOffset(0, 130)` | 车标偏移量（px） |
 
-// 设置全览模式
-mBackgroundDrawMapView.setNaviMapViewAllStatus(true);
+### 地图样式自定义
 
-// 设置默认缩放级别（4-22级）
-mBackgroundDrawMapView.setDefaultLevel(19);
+通过 `BkgCustomDrawOptions.Builder` 配置，支持以下属性：
 
-// 设置DPI缩放系数
-mBackgroundDrawMapView.setMapDpiScale(1);
+- 路线颜色 / 未走过路线颜色 / 已走过路线颜色
+- 地图背景颜色
+- 导航路线宽度
+- 车标 / 起点 / 终点图片及缩放比例
+- 路网路名颜色与字体大小
+- 罗盘图片
+- Logo 显示与缩放
 
-// 设置帧率
-mBackgroundDrawMapView.setFps(5);
+---
 
-// 设置正北朝向true 路线朝上 false 默认路线朝上
-mBackgroundDrawMapView.setNorthMode(true);
+## 注意事项
 
-// 设置车辆图标偏移 水平，垂直方向 单位 px
-mBackgroundDrawMapView.setCarOffset(0, 130);
-```
-#### 地图自定义
-参考类BkgCustomDrawOptions
- * - 地图路线颜色
- * - 地图背景颜色
- * - 未走过导航路线颜色
- * - 已走过导航路线颜色
- * - 导航路线宽度
- * - 车标图片
- * - 起点图片
- * - 终点图片
-#### 导航模式设置
+1. **多实例 license**：使用后台导航及多实例地图前，必须完成 `BWAuthLicenseType.AUTH_TYPE_MULTI_MAP` 授权验证。
+2. **引擎互斥**：骑行引擎与步行引擎不能同时初始化，切换前需先调用 `unInitNaviEngine()`。
+3. **二次进入清理**：重新启动多实例导航前，需依次调用 `quit()`、`unInitNaviEngine()` 并销毁旧的多实例视图，否则可能导致算路回调不触发。
+4. **MapView 生命周期**：每个 `MapView` 必须在宿主 Activity 的 `onResume`、`onPause`、`onDestroy` 中同步调用对应方法。
+5. **内存管理**：服务销毁时需调用 `bkgMapView.onDestroy()` 和 `OffScreenMapNaviHelper.getInstance().destoryAllBkgNavi()` 释放资源。
 
-```java
-// 启动后台导航（真实导航模式）
-boolean success = WalkNavigateHelper.getInstance().startBkgNavi(
-    null, 
-    context, 
-    WalkNavigateHelper.NaviMode.RealNavi
-);
-```
+---
 
-#### 注意事项：
+## 接口文档
 
-1. **权限检查**：启动前必须验证多实例地图权限
-2. **内存管理**：服务销毁时需要释放地图资源
-
-
-
-
-
-## 图像投屏文档pdf
-[投屏接口文档.pdf](https://github.com/user-attachments/files/22022365/default.pdf)
-
-
-
-
+- [投屏接口文档 PDF](https://github.com/user-attachments/files/22022365/default.pdf)

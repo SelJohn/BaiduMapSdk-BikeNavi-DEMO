@@ -15,7 +15,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import java.util.ArrayList;
@@ -42,7 +41,7 @@ import java.util.List;
  */
 public class BNaviGuideActivity extends Activity {
 
-    private final static String TAG = BNaviGuideActivity.class.getSimpleName();
+    private static final String TAG = BNaviGuideActivity.class.getSimpleName();
 
     private BikeNavigateHelper mNaviHelper;
     public static boolean mIsRunning = false;
@@ -89,6 +88,7 @@ public class BNaviGuideActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_navi);
         mIsRunning = true;
         mNaviHelper = BikeNavigateHelper.getInstance();
         BikeNaviDisplayOption bikeNaviDisplayOption = new BikeNaviDisplayOption()
@@ -99,15 +99,17 @@ public class BNaviGuideActivity extends Activity {
 
         mNaviHelper.setBikeNaviDisplayOption(bikeNaviDisplayOption);
 
-        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT);
-        FrameLayout frameLayout = new FrameLayout(this);
-        frameLayout.setLayoutParams(params);
+        FrameLayout frameLayout = findViewById(R.id.mapVg);
+
         View view = mNaviHelper.onCreate(BNaviGuideActivity.this);
         if (view != null) {
             frameLayout.addView(view);
-            setContentView(frameLayout);
         }
+        // 增加鹰眼小图
+//        FrameLayout eagleMiniMapFrame = findViewById(R.id.eagleMiniMap);
+//        EagleMiniMap eagleMiniMap = new EagleMiniMap(this);
+//        eagleMiniMapFrame.addView(eagleMiniMap);
+        // 增加鹰眼小图结束
 
         mNaviHelper.setBikeNaviStatusListener(new IBNaviStatusListener() {
             @Override
@@ -123,6 +125,7 @@ public class BNaviGuideActivity extends Activity {
                 return 0;
             }
         });
+
         if (BNaviMainActivity.isFakeNavi) {
             mNaviHelper.startBikeNavi(BNaviGuideActivity.this, BikeNavigateHelper.NaviMode.FakeNavi);
             mNaviHelper.setSimulateNaviSpeed(5);

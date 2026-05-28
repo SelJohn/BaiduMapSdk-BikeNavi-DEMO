@@ -5,11 +5,11 @@ import android.os.Message;
 import android.util.Log;
 
 import com.baidu.bikenavi_demo.floating.ComObservable;
-import com.baidu.mapapi.bikenavi.BikeNavigateHelper;
 import com.baidu.mapapi.bikenavi.adapter.IBRouteGuidanceListener;
 import com.baidu.mapapi.bikenavi.model.BikeRouteDetailInfo;
 import com.baidu.mapapi.bikenavi.model.BikeSimpleMapInfo;
 import com.baidu.mapapi.bikenavi.model.IBRouteIconInfo;
+import com.baidu.mapapi.common.model.traffic.TrafficLightOutData;
 import com.baidu.mapapi.walknavi.adapter.IWRouteGuidanceListener;
 import com.baidu.mapapi.walknavi.model.IWRouteIconInfo;
 import com.baidu.mapapi.walknavi.model.RouteGuideKind;
@@ -110,6 +110,11 @@ public class CommonGuideListener {
         public void onSimpleMapInfoUpdate(WalkSimpleMapInfo info) {
             Log.i("GuideIconObjectUpdate", "WalkSimpleMapInfo: " + info);
         }
+
+        @Override
+        public void onTrafficLightOutDataUpdate(TrafficLightOutData trafficLightOutData) {
+
+        }
     };
     public static final IBRouteGuidanceListener BIKE_GUIDE_LISTENER = new IBRouteGuidanceListener() {
 
@@ -177,7 +182,7 @@ public class CommonGuideListener {
 
         @Override
         public void onArriveDest() {
-            BikeNavigateHelper.getInstance().quit();
+
         }
 
         @Override
@@ -192,6 +197,11 @@ public class CommonGuideListener {
 
         @Override
         public void onNaviLocationUpdate() {
+
+        }
+
+        @Override
+        public void onTrafficLightOutDataUpdate(TrafficLightOutData trafficLightOutData) {
 
         }
 
