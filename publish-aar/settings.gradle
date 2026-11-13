@@ -1,0 +1,2 @@
+// 独立构建：JitPack 以 `-p publish-aar` 方式执行，避免配置根工程的 Android 模块
+rootProject.name = 'baidulbs-android'

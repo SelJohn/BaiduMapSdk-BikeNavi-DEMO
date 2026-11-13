@@ -1,0 +1,59 @@
+plugins {
+    id 'maven-publish'
+}
+
+// JitPack 会注入 VERSION 环境变量（= git tag），本地调试时退化为 dev
+group = 'com.jesse.map'
+version = findProperty('publishVersion') ?: System.getenv('VERSION') ?: 'dev'
+
+def aarFile = file('../libs/BaiduLBS_Android.aar')
+def jniDirs = ['arm64-v8a', 'armeabi-v7a']
+
+// 原始 aar 不含 .so（APP 侧靠 jniLibs.srcDir 'libs' 带进去），
+// 发布前必须把原生库塞进 aar 的 jni/<abi>/，否则消费方运行时 UnsatisfiedLinkError
+tasks.register('repackAar', Zip) {
+    doFirst {
+        if (!aarFile.exists()) {
+            throw new GradleException("aar 不存在: ${aarFile.canonicalPath}")
+        }
+    }
+    archiveBaseName = 'baidulbs-android'
+    archiveExtension = 'aar'
+    destinationDirectory = layout.buildDirectory.dir('outputs')
+
+    from(zipTree(aarFile))
+    jniDirs.each { abi ->
+        from("../libs/${abi}") {
+            include '*.so'
+            into "jni/${abi}"
+        }
+    }
+}
+
+publishing {
+    publications {
+        aar(MavenPublication) {
+            artifactId = 'baidulbs-android'
+            artifact(tasks.named('repackAar')) {
+                extension = 'aar'
+            }
+
+            pom {
+                packaging = 'aar'
+                name = 'BaiduLBS_Android'
+                description = '百度地图 Android SDK（骑行/步行导航）预编译 aar'
+
+                // 裸 aar 没有 Gradle 元数据，依赖须手写进 POM，否则消费方拿不到 NaviTts
+                withXml {
+                    def dependency = asNode()
+                            .appendNode('dependencies')
+                            .appendNode('dependency')
+                    dependency.appendNode('groupId', 'com.baidu.lbsyun')
+                    dependency.appendNode('artifactId', 'NaviTts')
+                    dependency.appendNode('version', '3.2.13')
+                    dependency.appendNode('scope', 'compile')
+                }
+            }
+        }
+    }
+}

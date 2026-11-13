@@ -1,0 +1,4 @@
+jdk:
+  - openjdk17
+install:
+  - ./gradlew -p publish-aar publishToMavenLocal -PpublishVersion=$VERSION
